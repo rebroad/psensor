@@ -24,7 +24,8 @@
 #include <psensor.h>
 
 static const char *PROVIDER_NAME = "phone-sensor";
-static struct psensor *phone_sensor = NULL;
+static struct psensor *phone_temp_sensor = NULL;
+static struct psensor *phone_battery_sensor = NULL;
 
 /* Get home directory */
 static const char *get_home_dir(void)
@@ -57,6 +58,25 @@ static char *get_temp_file_path(void)
 	return path;
 }
 
+/* Get battery file path */
+static char *get_battery_file_path(void)
+{
+	const char *home = get_home_dir();
+	char *path;
+	int len;
+
+	if (!home)
+		return NULL;
+
+	len = strlen(home) + 50;  /* enough for path */
+	path = malloc(len);
+	if (!path)
+		return NULL;
+
+	snprintf(path, len, "%s/.local/share/phone-sensor/battery_level", home);
+	return path;
+}
+
 /* Read temperature from file (in millidegrees Celsius) */
 static double read_phone_temperature(void)
 {
@@ -86,6 +106,35 @@ static double read_phone_temperature(void)
 	return temp;
 }
 
+/* Read battery level from file (0-100) */
+static double read_phone_battery(void)
+{
+	char *path;
+	FILE *f;
+	double battery = UNKNOWN_DBL_VALUE;
+	int level;
+
+	path = get_battery_file_path();
+	if (!path)
+		return UNKNOWN_DBL_VALUE;
+
+	f = fopen(path, "r");
+	free(path);
+
+	if (!f)
+		return UNKNOWN_DBL_VALUE;
+
+	if (fscanf(f, "%d", &level) == 1) {
+		/* -1 is sentinel for invalid/no data, 0-100 are valid battery levels */
+		if (level >= 0 && level <= 100) {
+			battery = (double)level;
+		}
+	}
+
+	fclose(f);
+	return battery;
+}
+
 /* Check if phone sensor file exists */
 static int phone_sensor_available(void)
 {
@@ -107,8 +156,8 @@ static int phone_sensor_available(void)
 	return exists;
 }
 
-/* Create phone sensor */
-static struct psensor *create_phone_sensor(int values_max_length)
+/* Create phone temperature sensor */
+static struct psensor *create_phone_temp_sensor(int values_max_length)
 {
 	int t;
 	char *id, *name;
@@ -117,47 +166,79 @@ static struct psensor *create_phone_sensor(int values_max_length)
 		return NULL;
 
 	t = SENSOR_TYPE_TEMP;
-	id = strdup("phone-sensor-battery");
-	name = strdup(_("Phone Battery"));
+	id = strdup("phone-sensor-temperature");
+	name = strdup(_("Phone Temperature"));
 
-	phone_sensor = psensor_create(id, name, strdup("Phone"), t, values_max_length);
-	if (phone_sensor) {
-		phone_sensor->min = 0.0;
-		phone_sensor->max = 60.0;  /* Reasonable max for phone battery */
-	}
+	phone_temp_sensor = psensor_create(id, name, strdup("Phone"), t, values_max_length);
+	return phone_temp_sensor;
+}
 
-	return phone_sensor;
+/* Create phone battery level sensor */
+static struct psensor *create_phone_battery_sensor(int values_max_length)
+{
+	int t;
+	char *id, *name;
+	char *battery_path;
+
+	battery_path = get_battery_file_path();
+	if (!battery_path)
+		return NULL;
+
+	/* Check if battery file exists */
+	FILE *f = fopen(battery_path, "r");
+	free(battery_path);
+	if (!f)
+		return NULL;
+	fclose(f);
+
+	t = SENSOR_TYPE_PERCENT;
+	id = strdup("phone-sensor-battery-level");
+	name = strdup(_("Phone Battery Level"));
+
+	phone_battery_sensor = psensor_create(id, name, strdup("Phone"), t, values_max_length);
+	return phone_battery_sensor;
 }
 
 void phone_sensor_psensor_list_append(struct psensor ***sensors, int values_length)
 {
 	struct psensor *s;
 
-	/* Try to create phone sensor */
-	s = create_phone_sensor(values_length);
+	/* Try to create phone temperature sensor */
+	s = create_phone_temp_sensor(values_length);
 	if (s) {
 		psensor_list_append(sensors, s);
 		log_info(_("%s: Phone temperature sensor added."), PROVIDER_NAME);
+	}
+
+	/* Try to create phone battery level sensor */
+	s = create_phone_battery_sensor(values_length);
+	if (s) {
+		psensor_list_append(sensors, s);
+		log_info(_("%s: Phone battery level sensor added."), PROVIDER_NAME);
 	}
 }
 
 void phone_sensor_psensor_list_update(struct psensor **sensors)
 {
 	struct psensor **sensor_cur;
-	double temp;
+	double temp, battery;
 
 	if (!sensors)
 		return;
 
-	/* Find phone sensor in list */
+	/* Update phone sensors in list */
 	sensor_cur = sensors;
 	while (*sensor_cur) {
-		if (strcmp((*sensor_cur)->id, "phone-sensor-battery") == 0) {
+		if (strcmp((*sensor_cur)->id, "phone-sensor-temperature") == 0) {
 			temp = read_phone_temperature();
 			if (temp != UNKNOWN_DBL_VALUE) {
 				psensor_set_current_value(*sensor_cur, temp);
 			}
-			break;
+		} else if (strcmp((*sensor_cur)->id, "phone-sensor-battery-level") == 0) {
+			battery = read_phone_battery();
+			if (battery != UNKNOWN_DBL_VALUE) {
+				psensor_set_current_value(*sensor_cur, battery);
+			}
 		}
 		sensor_cur++;
 	}
