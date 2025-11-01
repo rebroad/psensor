@@ -9,6 +9,7 @@ libpsensor_a_SOURCES = \
 	measure.h measure.c\
 	nvidia.h\
 	parray.h\
+	phone_sensor.h phone_sensor.c\
 	pgtop2.h\
 	plog.h plog.c\
 	pmutex.h pmutex.c\

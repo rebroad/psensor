@@ -38,6 +38,7 @@
 #include <notify_cmd.h>
 #include <nvidia.h>
 #include <pgtop2.h>
+#include <phone_sensor.h>
 #include <pmutex.h>
 #include <psensor.h>
 #include <pudisks2.h>
@@ -144,6 +145,7 @@ static void *update_measures(void *data)
 		gtop2_psensor_list_update(sensors);
 		atasmart_psensor_list_update(sensors);
 		hddtemp_psensor_list_update(sensors);
+		phone_sensor_psensor_list_update(sensors);
 
 		psensor_log_measures(sensors);
 
@@ -415,6 +417,8 @@ static struct psensor **create_sensors_list(const char *url)
 
 		if (config_is_udisks2_enabled())
 			udisks2_psensor_list_append(&sensors, 600);
+
+		phone_sensor_psensor_list_append(&sensors, 600);
 	}
 
 	associate_preferences(sensors);
