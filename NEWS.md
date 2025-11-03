@@ -1,8 +1,6 @@
-= Psensor NEWS
-:docinfo2:
+# Psensor NEWS
 
-v1.2.0
-------
+## v1.2.0
 
 * Added tooltip explaining why a setting is not available.
 * Removed support of old AppIndicator library < 3.0.
@@ -14,35 +12,31 @@ v1.2.0
 * Fixed string not translatable. (Closes: #138076).
 * Added a default high threshold for temperature.
 * Made help2man optional.
-* New dconf settings +default-high-threshold-temperature+,
-  and +default-sensor-alarm-enabled+.
+* New dconf settings `default-high-threshold-temperature`,
+  and `default-sensor-alarm-enabled`.
 * Fixed memory leaks due to glib GError.
 * Added Greek translation.
 * Updated Russian translation (Grigorii Chirkov).
 * Updated German translation (Max).
 * Added Polish translation (hawkeye116477).
 
-v1.1.5
-------
+## v1.1.5
 
 * Fixed CPU overuse. (LP: 1582930)
 
-v1.1.4
-------
+## v1.1.4
 
 * psensor-server: avoid to retrieve files which are not under the
   webserver directory.
 * Fixed compilation failure due to MHD_create_response_from_buffer
   which has been deprecated  
 
-v1.1.3
-------
+## v1.1.3
 
 * Fixed compilation issue with gtk+3.14 due to deprecation
   of GtkStatusIcon. (Closes: #763257).
 
-v1.1.2
-------
+## v1.1.2
 
 * Fixed missing description in psensor manpage.
 * All mouse buttons can be used to raise color settings in the list of
@@ -68,14 +62,13 @@ v1.1.2
 * Fixed small UI layout/padding issues.
 * Splitted sensor preferences using a tab panel.
 * New preferences to enable/disable each sensor provider.
-* psensor: removed option +--use-libatasmart+.
+* psensor: removed option `--use-libatasmart`.
 * Changed default color for the curves (copied from the default
   colors of the gtk color chooser widget).
 
-v1.1.1
-------
+## v1.1.1
 
-* Sensor properties stored in +$HOME/.psensor/psensor.cfg+ instead of
+* Sensor properties stored in `$HOME/.psensor/psensor.cfg` instead of
   GConf.
 * psensor settings stored with dconf, removed dependency to gconf2.
 * Fixed check of sensors/error.h.
@@ -88,13 +81,11 @@ v1.1.1
 * Merged Swedish translation from LP (Josef Andersson).
 * Meged Turkish translation from LP (İbrahim Çelik).
 
-v1.0.4
-------
+## v1.0.4
 
 * Fixed menu separators of the appindicator. 
 
-v1.0.3
-------
+## v1.0.3
 
 * Fixed bug: psensor not autostarted when $HOME/.config/autostart does
   not exist.
@@ -104,14 +95,12 @@ v1.0.3
 * Fixed FTBFS with clang instead of gcc. (Closes: #753061).
 * Fixed notification script call (wrong allocation of command string).
 
-v1.0.2
-------
+## v1.0.2
 
-* +psensor-server+:
+* `psensor-server`:
   - Fixed file descriptor leaks.
 
-v1.0.1
-------
+## v1.0.1
 
 * Smaller and more consistent with ubuntu themes appindicator icons.
 * Sensors displayed directly in the top bar (experimental).
@@ -136,8 +125,7 @@ v1.0.1
 * Fixed default sensor color which was always black.
 * Fixed compilation on ppc64. (Closes: #749110)
 
-v0.8.0.6
---------
+## v0.8.0.6
 
 * Updated jquery and jqplot to last version.
 * Removed excanvas for copyright reason (apache license not compatible
@@ -145,12 +133,11 @@ v0.8.0.6
 * Use non-minimized version of .js and .css to avoid lintian errors
   (source-is-missing).
 
-v0.8.0.5
---------
+## v0.8.0.5
 
 * Added NEWS.html.
 * Converted NEWS file to asciidoc.
-* +psensor-server+:
+* `psensor-server`:
   - removed web fonts causing lintian warnings.
   - redesigned web pages.
 * Merged German translation from LP (Dennis Baudys).
@@ -164,9 +151,8 @@ v0.8.0.5
   GtkActionEntry. Menu is defined in glade file instead of
   hardcoded. (LP: #1304108).
 
-v0.8.0.4
---------
-	
+## v0.8.0.4
+
 * Added calling script when an alarm is raised.
 * Reordering of the list of sensors.
 * Added keywords in .desktop file.
@@ -177,15 +163,13 @@ v0.8.0.4
 * Merged French translation from LP (londumas).
 * Merged Brazilian translation from LP (Celio Alves).
 
-v0.8.0.3
---------
+## v0.8.0.3
 
 * Switched to GtkColorChooserDialog instead of the
    deprecated widget GtkColorSelectionDialog. (LP: #1184442)
-* +psensor-server+: fixed compilation without gtop2 lib.
+* `psensor-server`: fixed compilation without gtop2 lib.
 
-v0.8.0.2
---------
+## v0.8.0.2
 
 * GConf2/GTK/XEXT/X11 lib optional to allow psensor-server
    compilation without them.
@@ -193,12 +177,11 @@ v0.8.0.2
 * merged German translation from LP (Dennis Baudys).
 * merged Latvian translation from LP (tuxmaniack).
 
-v0.8.0.1
---------
+## v0.8.0.1
 
 * added AMD GPU usage sensor (Contribution from MestreLion).
 * added support of sensors log interval.
-* +psensor-server+: protocole changes, API version incremented.
+* `psensor-server`: protocole changes, API version incremented.
 * fixed cpu load when fahrenheit is enabled.
 * list of sensors can be reordered using the sensor preferences
    dialog.
@@ -209,13 +192,11 @@ v0.8.0.1
 * fixed the quit menu of the application indicator which was
    not translatable.
 
-v07.0.5
---------
+## v07.0.5
 
 * fixed cpu load when fahrenheit is enabled.
 
-v0.7.0.4
---------
+## v0.7.0.4
 
 * added Spanish translation from LP (Javier and Eduardo Alberto
    Calvo).
@@ -231,8 +212,8 @@ v0.7.0.4
    for cpu usage. The option was inversed each time it is displayed in
    the preference dialog.
 * psensor: added an option to enable logging of sensors
-   ($HOME/.psensor/sensors.log).
-* +psensor-server+: added sensors logging (--sensor-log-file).
+   (`$HOME/.psensor/sensors.log`).
+* `psensor-server`: added sensors logging (--sensor-log-file).
 * psensor: display the name of chip in sensor preferences.
 * psensor: moved the sensor id into a expendable frame of the sensor
    preferences.
@@ -251,15 +232,13 @@ v0.7.0.4
    window.
 * fixed compilation error in amd.c (hdll not used).
 
-v0.7.0.3
---------
+## v0.7.0.3
 
 * psensor: removed gettext_domain in psensor.schemas causing
    warnings.
 * merged italian and russian translation from LP.
 
-v0.7.0.2
---------
+## v0.7.0.2
 
 * psensor: added latvian translation file.
 * psensor: added gconf schema. (LP: #1026807)
@@ -267,8 +246,7 @@ v0.7.0.2
 * psensor: removed hicolor/48x48/psensor_hot.png. (LP: #1029065)
 * merge chinese translation from LP.
 
-v0.7.0.1
---------
+## v0.7.0.1
 
 * psensor: minimum GTK version is now 3.0, GTK v2.x is no more
    supported.
@@ -289,10 +267,10 @@ v0.7.0.1
    font of the graph legend.
 * psensor: used tab layout for psensor preferences.
 * psensor: temperature unit choice (celsius/fahrenheit).
-* +psensor-server+: fixed --wdir option.
-* +psensor-server+: added log level to -d option.
-* +psensor-server+: added --log-file option.
-* +psensor-server+: logged measures when log level is 3.
+* `psensor-server`: fixed --wdir option.
+* `psensor-server`: added log level to -d option.
+* `psensor-server`: added --log-file option.
+* `psensor-server`: logged measures when log level is 3.
 * psensor: fixed many memory leaks in cfg.c (gconf2 keys).
 * psensor: fixed memory leak (sensor name when specified by the
    configuration).
@@ -320,14 +298,12 @@ v0.7.0.1
 * psensor: fixed hide window on startup for gnome-shell (Closes:
    #676361).
 
-v0.6.2.19
----------
+## v0.6.2.19
 
 * psensor: fixed size of the icon hicolor/48x48/psensor_hot.png.
    (LP: #1029065)
 
-v0.6.2.18
----------
+## v0.6.2.18
 
 * added degree sign for celsius (Closes LP: #1021900).
 * added russian, brazilian, hungarian, serbian, slovenian,
@@ -336,8 +312,7 @@ v0.6.2.18
 * psensor: fixed hide window on startup for gnome-shell (Closes:
    #676361).
 
-v0.6.2.17
----------
+## v0.6.2.17
 
 * psensor: fixed sensor type displayed in sensor preferences
    dialog. (Closes LP: #968912)
@@ -345,32 +320,28 @@ v0.6.2.17
 * psensor: not calling g_thread_init when compiled with glib >= 2.31.
 * changed copyright dates to 2012.
 
-v0.6.2.16
----------
+## v0.6.2.16
 
 * psensor: removed -pedantic and ignores deprecation warnings
    to fix compilation against the glib version of Ubuntu Precise.
    It fixes Ubuntu bug #905893.
 
-v0.6.2.15
----------
+## v0.6.2.15
 
-* +psensor-server+: uses glibtop instead of 'sysinfo' which is not
+* `psensor-server`: uses glibtop instead of 'sysinfo' which is not
    available on kfreebsd. It fixes Debian bug #650533.
 
-v0.6.2.14
----------
+## v0.6.2.14
 
 * psensor: support of gtk>=2.18
 * psensor: inner space of the graph using the theme background color
-* +psensor-server+: fixed compilation with microhttpd >=0x90200 and
+* `psensor-server`: fixed compilation with microhttpd >=0x90200 and
    64bits.
 * added some information in the README (mostly about compilation on
    CentOS).
-* +psensor-server+: support of symbolic links to webfiles.
+* `psensor-server`: support of symbolic links to webfiles.
 
-v0.6.2.13
----------
+## v0.6.2.13
 
 * psensor can now be compiled and run with gtk3.
 * psensor: added gtk3 support build detection.
@@ -379,7 +350,7 @@ v0.6.2.13
 * psensor: use 'draw' signal instead of 'expose-event' when compiled
    with gtk3. 
 * psensor: fixed typo in french translation file.
-* +psensor-server+: fixed compilation with microhttpd >= 0.9.2 (version
+* `psensor-server`: fixed compilation with microhttpd >= 0.9.2 (version
    used by Fedora15) which introduced incompatible API changes.
 * psensor: fixed compilation with libnotify 0.5.2 (submitted by Lubos
    Stanek).
@@ -391,15 +362,13 @@ v0.6.2.13
 * psensor: added support of status tray icon for DE not supporting
    Ubuntu Application Indicator.
 
-v0.6.2.12
----------
+## v0.6.2.12
 
 * psensor: added -d option to enable debug log (written to $HOME/.psensor/log).
 * psensor: log sensor values in debug mode.
 * psensor: added option to restore window position and size.
 
-v0.6.2.11
----------
+## v0.6.2.11
 
 * psensor-server/web interface: use jqplot default css.
 * psensor-server/web interface: added excanvas for ie < 9 support.
@@ -415,23 +384,21 @@ v0.6.2.11
 * psensor: added X-GNOME-Autostart-Delay in .desktop file to
    workaround LP: #859724.
 
-v0.6.2.10
----------
+## v0.6.2.10
 
-* +psensor-server+: added network, cpu load and memory information in
+* `psensor-server`: added network, cpu load and memory information in
    JSON web interface.
-* +psensor-server+: added monitor.html and details.html using jquery
+* `psensor-server`: added monitor.html and details.html using jquery
    and retrieving monitoring data from the JSON web interface.
 * added experimental support for ATI/AMD gpus and fans.
 * psensor: added support of CPU usage monitoring.
-* +psensor-server+: display graph of sensors (web server).
+* `psensor-server`: display graph of sensors (web server).
 * psensor: bug fixed compilation with -Wall.
 * psensor: bug fixed unallocated memory read during termination.
 * psensor: fixed memleak when window not drawable.
 * psensor: release GConfClient when quitting.
 
-v0.6.2.9
---------
+## v0.6.2.9
 
 * psensor: fixed UI freeze on Ubuntu Lucid when 'sensor preferences'.
    is selected with application indicator.
@@ -448,11 +415,10 @@ v0.6.2.9
    - psensor quit on window close
    - show psensor even if hide on startup is enabled
 
-v0.6.2.8
---------
+## v0.6.2.8
 
 * psensor: escaped - in manpage.
-* +psensor-server+: escaped - in manpage.
+* `psensor-server`: escaped - in manpage.
 * psensor: added support of libnotify 0.7.
 * psensor: added turkish support.
 * psensor: fixed multi-languages support used by glade.
@@ -472,8 +438,7 @@ v0.6.2.8
 * psensor: fixed crash when glade files cannot be read.
 * psensor: display sensors information in the application indicator.
 
-v0.6.2.7
---------
+## v0.6.2.7
 
 * psensor: src/glade/psensor-pref.glade, added button separator.
 * psensor: src/glade/sensor-edit.glade, fixed horiz/vert padding.
@@ -481,44 +446,38 @@ v0.6.2.7
 * psensor: fixed freeze when click on preferences appindicator with
    natty.
 
-v0.6.2.6
---------
+## v0.6.2.6
 
 * psensor: fixed min temp/fan of the graph
 * psensor: very minor optimization (graph.c)
 
-v0.6.2.5
---------
+## v0.6.2.5
 
 * psensor: dialog box for editing psensor preferences is using Glade
 * psensor: dialog box for editing sensor preferences is using Glade
 * psensor: added support of negative temperatures (lm-sensors)
 
-v0.6.2.4
---------
+## v0.6.2.4
 
 * psensor, graph: fixed padding bugs 
 * psensor, graph: drawing code refactored
 * psensor: the value of the first detected sensor is displayed in the
    unity launcher entry of psensor (requires unity >=3.4.2).
 
-v0.6.2.3
---------
+## v0.6.2.3
 
-* +psensor-server+: new global variable 'psensor_version' for lua template
-* +psensor-server+: /index.html replaced by /index.lua
+* `psensor-server`: new global variable 'psensor_version' for lua template
+* `psensor-server`: /index.html replaced by /index.lua
 * avoid useless lib linkage by using --as-needed
 
-v0.6.2.2
---------
+## v0.6.2.2
 
-* +psensor-server+: web server support binary files
-* +psensor-server+: added favicon.ico
-* +psensor-server+: moved index.lua to monitor.lua
-* +psensor-server+: added index.html (welcome page)
+* `psensor-server`: web server support binary files
+* `psensor-server`: added favicon.ico
+* `psensor-server`: moved index.lua to monitor.lua
+* `psensor-server`: added index.html (welcome page)
 
-v0.6.2.1
---------
+## v0.6.2.1
 
 * added uptime/memory information (psensor-server web)
 * added debug mode for psensor-server (--debug)
@@ -527,20 +486,17 @@ v0.6.2.1
 * fixed memory leak (label of lmsensor)
 * some code cleanup/refactoring
 
-v0.6.1.10
---------
+## v0.6.1.10
 
 * psensor: support of appindicator < 0.2.9
 * psensor: closing the window hides psensor instead of quitting when
    application indicator support is enabled. 
 
-v0.6.1.9
---------
+## v0.6.1.9
 
 * avoid fetching hddtemp daemon when no hdd in the sensors list
 
-v0.6.1.8
---------
+## v0.6.1.8
 
 * psensor: added turkish language
 * psensor: fixed freeze when click on preferences appindicator with
@@ -548,33 +504,28 @@ v0.6.1.8
 * fixed typo (${X11_LIBS}) in configure.ac
 * psensor: full french language support
 
-v0.6.1.7
---------
+## v0.6.1.7
 
 * psensor: add support of libnotify 0.7
 
-v0.6.1.6
---------
+## v0.6.1.6
 
 * psensor: escaped - in manpage
-* +psensor-server+: escaped - in manpage
+* `psensor-server`: escaped - in manpage
 
-v0.6.1.5
---------
+## v0.6.1.5
 
 * added multi-language for hdd.c/nvidia.c/lmsensor.c
 * some code cleanup/refactoring
 
-v0.6.1.4
---------
+## v0.6.1.4
 
 * fixed manpage formatting in 'REPORTING BUGS' section
 * improved manpages
 * removed few useless translations (fr/zh_CN)
 * improved error messages for remote sensors + multilanguages support
 
-v0.6.1.3
---------
+## v0.6.1.3
 
 * fixed compilation error of psensor when libcurl is present but not
    libjson0
@@ -583,15 +534,13 @@ v0.6.1.3
 * added more information in the psensor/psensor-server manpages.
 * added warning about psensor-server and security in README.
 
-v0.6.1.1
---------
+## v0.6.1.1
 
 * application icon is loaded using GtkIconTheme
 * appindicator icon is now the psensor one
 * added appindicator icon for status 'attention'
 
-v0.6.1
-------
+## v0.6.1
 
 * added style.css for psensor-server
 * use some styling in index.lua
@@ -601,42 +550,39 @@ v0.6.1
 * added some translation for French language0
 * fixed psensor-server bug: first sensor was not displayed
 
-v0.6.0.14
----------
+## v0.6.0.14
 
-* psensor (gtk client):
+### psensor (gtk client)
 
-** added global preference: graph update interval
-** added global preference: graph monitoring duration
-** added global preference: sensor update interval
-** standard gnu command line interface for psensor
-** new psensor options: --help, --version, --url
-** added generation and installation of the psensor man
-** added remote monitoring it requires a new optionnal dependencies
-    (libjson0 and libcurl)
-** added internationnalization support for the UI
-** added Simplified Chinese Language (from DaBao <linux.dabao@gmail.com>)
+* added global preference: graph update interval
+* added global preference: graph monitoring duration
+* added global preference: sensor update interval
+* standard gnu command line interface for psensor
+* new psensor options: --help, --version, --url
+* added generation and installation of the psensor man
+* added remote monitoring it requires a new optionnal dependencies
+   (libjson0 and libcurl)
+* added internationnalization support for the UI
+* added Simplified Chinese Language (from DaBao <linux.dabao@gmail.com>)
 
-* +psensor-server+:
+### psensor-server
 
-** psensor-server is now a minimal webserver based on microhttpd.
-    Lua5.1 is used to generate HTML pages to display temperatures and
-    gtop2 information
-** temperature information can be retrieved using a webservice based
-    on json
-** added cpu information (requires optional libgtop-2.0)
-** psensor-server 
-** psensor-server options: --port, --help, --version
-** added generation and installation of the psensor-server man
+* psensor-server is now a minimal webserver based on microhttpd.
+   Lua5.1 is used to generate HTML pages to display temperatures and
+   gtop2 information
+* temperature information can be retrieved using a webservice based
+   on json
+* added cpu information (requires optional libgtop-2.0)
+* psensor-server options: --port, --help, --version
+* added generation and installation of the psensor-server man
 
-* common news for psensor and psensor-server:
+### common news for psensor and psensor-server
 
-** moved to autoconf/automake
-** gnu standard: use NEWS instead of CHANGES file
-** moved LICENSE to COPYING
+* moved to autoconf/automake
+* gnu standard: use NEWS instead of CHANGES file
+* moved LICENSE to COPYING
 
-v0.5.1
-------
+## v0.5.1
 
 * Makefile: avoid debug compilation by default
 * Makefile: fixed duplicate server.o in OBJS_SERVER
@@ -644,8 +590,7 @@ v0.5.1
 * moved CHANGES to NEWS
 * Fixed creation of directories for the target 'install'
 
-v0.5.0
-------
+## v0.5.0
 
 * Added double buffering of the graph to avoid flickering
 * Fixed README error gconf package name
@@ -660,38 +605,32 @@ v0.5.0
 * Window decoration can be hidden
 * Added 'keep window below' setting
 
-v0.4.5
-------
+## v0.4.5
 
 * Makefile: fixed duplicate server.o in OBJS_SERVER
 
-v0.4.4
-------
+## v0.4.4
 
 Added README.debian
 
-v0.4.3
-------
+## v0.4.3
 
 * Fixed foreground graph color first time psensor is started
 * Added support of gtk 2.12 (used by Debian 5.0.6 Lenny) by redefining
 * gtk_dialog_get_content_area which exist since 2.14
 
-v0.4.2
-------
+## v0.4.2
 
 * Fixed potential MT issue (refresh_thread)
 * Added double buffering of the graph to avoid flickering
 * Fixed minor graph code bugs
 
-v0.4.1
-------
+## v0.4.1
 
 * Fixed README error gconf package name
 * Refactoring makefile
 
-v0.4.0
-------
+## v0.4.0
 
 * Added FAN support
 * Added HDD support (using hddtemp daemon)
@@ -699,37 +638,32 @@ v0.4.0
 * Graph background can be transparent, opacity can be changed
 * Fixed BR3: sensors with the same name but different chips share the same color configuration
 * Fixed BR4: wrong OBJS variable and gconf when calling pkg-config in Makefile.distrib for compiling with NVidia support
-Changed website URL
+* Changed website URL
 * Fixed BR5: Psensor crashes during startup with "You forgot to call g_type_init()"
 
-v0.3.3
-------
+## v0.3.3
 
 * Fixed potential MT issue  (refresh_thread)
 * Improved Makefile
 
-v0.3.2
-------
+## v0.3.2
 
 * Fixed BR4: wrong OBJS variable and gconf when calling pkg-config in Makefile.distrib for compiling with NVidia support
 * Changed website URL
 * Fixed BR5: Psensor crashes during startup with "You forgot to call g_type_init()"
 
-v0.3.1
-------
+## v0.3.1
 
 Fixed BR3: sensors with the same name but different chips share the same color configuration
 
-v0.3.0
-------
+## v0.3.0
 
 * Sensor graph colors can be changed: click on the colored sensor cell in the information table)
 * Background color of the graph can be changed: click on the graph
 * Configuration is stored using GConf
 * Fixed not initialized memory bug (min/max) in nvidia support
 
-v0.2.7
-------
+## v0.2.7
 
 * Updated the website URL
 * Added contact information in the README
@@ -737,55 +671,46 @@ v0.2.7
 * Removed pwiki styling of the README
 * Backport: Fixed not initialized memory bug (min/max) in nvidia support
 
-
-v0.2.6
-------
+## v0.2.6
 
 * Changed default graph colors and background
 * Added vertical padding for the graph canvas
 * Disabled row selection of the sensor table
 * Fixed BR2: nvidia gpu is always using black color
 
-v0.2.5
-------
+## v0.2.5
 
 Added a basic server to retrieve remotely temperatures
 
-v0.2.4
-------
+## v0.2.4
 
 * Added application icon
 * Added .desktop file
 
-v0.2.3
-------
+## v0.2.3
 
 * Added max and min temperature information for each sensor
 * Fixed a missing #include in nvidia.c
 * Small UI improvements (scrollbar for the right panel + slider)
 
-v0.2.2
-------
+## v0.2.2
 
 * Fixed compilation warning when NVidia support is disabled
 * Fixed BR1: crash when no temperature sensor is available
 
-v0.2.1
---------
+## v0.2.1
 
 Compilation dependance to Nvidia lib is optional
 
-v0.2.0
-------
+## v0.2.0
 
 Added support of NVidia GPUs
 
-v0.1.1
-------
+## v0.1.1
 
 Improved right panel (list of sensors) + ability to disable each sensor graph
 
-v0.1.0
-------
+## v0.1.0
 
 Initial release
+

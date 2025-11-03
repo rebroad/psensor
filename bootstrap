@@ -1,0 +1,15 @@
+#!/bin/sh
+# Bootstrap script to regenerate autotools files
+# This script runs autoreconf to regenerate configure, Makefile.in, etc.
+# from the source files (configure.ac, Makefile.am, etc.)
+
+set -e
+
+echo "Running autoreconf -fiv..."
+autoreconf -fiv
+
+echo ""
+echo "Bootstrap complete. You can now run:"
+echo "  ./configure"
+echo "  make"
+
