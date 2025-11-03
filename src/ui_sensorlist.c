@@ -44,6 +44,24 @@ struct cb_data {
 	struct psensor *sensor;
 };
 
+static void column_width_changed_cb(GObject *gobject,
+					GParamSpec *pspec,
+					gpointer user_data)
+{
+	GtkTreeViewColumn *column;
+	int col_index;
+	int width;
+
+	col_index = GPOINTER_TO_INT(user_data);
+	column = GTK_TREE_VIEW_COLUMN(gobject);
+	width = gtk_tree_view_column_get_width(column);
+
+	if (width > 0) {
+		config_set_sensorlist_column_width(col_index, width);
+		config_sync();
+	}
+}
+
 static int col_index_to_col(int idx)
 {
 	if (idx == 5)
@@ -120,8 +138,8 @@ void ui_sensorlist_update(struct ui_psensor *ui, bool complete)
 		gtk_tree_model_get(model, &iter, COL_SENSOR, &s, -1);
 
 		value = psensor_value_to_str(s->type,
-					     psensor_get_current_value(s),
-					     use_celsius);
+						 psensor_get_current_value(s),
+						 use_celsius);
 		min = psensor_value_to_str(s->type,
 					   s->sess_lowest,
 					   use_celsius);
@@ -187,7 +205,7 @@ static int get_col_index_at_pos(GtkTreeView *view, int x)
 		checkcol = (GtkTreeViewColumn *)node->data;
 
 		if (x >= colx
-		    && x < (colx + gtk_tree_view_column_get_width(checkcol)))
+			&& x < (colx + gtk_tree_view_column_get_width(checkcol)))
 			return coli;
 
 		colx += gtk_tree_view_column_get_width(checkcol);
@@ -301,8 +319,8 @@ static int clicked_cbk(GtkWidget *widget, GdkEventButton *event, gpointer data)
 		if (coli == COL_COLOR) {
 			color = config_get_sensor_color(s->id);
 			if (ui_change_color(_("Select sensor color"),
-					    color,
-					    GTK_WINDOW(ui->main_window))) {
+						color,
+						GTK_WINDOW(ui->main_window))) {
 				config_set_sensor_color(s->id, color);
 				ui_sensorlist_update(ui, 1);
 				config_sync();
@@ -313,7 +331,7 @@ static int clicked_cbk(GtkWidget *widget, GdkEventButton *event, gpointer data)
 			menu = create_sensor_popup(ui, s);
 
 			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-				       event->button, event->time);
+					   event->button, event->time);
 			return TRUE;
 		}
 
@@ -322,8 +340,8 @@ static int clicked_cbk(GtkWidget *widget, GdkEventButton *event, gpointer data)
 }
 
 void ui_sensorlist_cb_graph_toggled(GtkCellRendererToggle *cell,
-				    gchar *path_str,
-				    gpointer data)
+					gchar *path_str,
+					gpointer data)
 {
 	struct ui_psensor *ui;
 	GtkTreeModel *model, *fmodel;
@@ -367,6 +385,8 @@ void ui_sensorlist_cb_graph_toggled(GtkCellRendererToggle *cell,
 void ui_sensorlist_create(struct ui_psensor *ui)
 {
 	GtkTreeModel *fmodel, *model;
+	GtkTreeViewColumn *column;
+	int i, saved_width;
 
 	log_fct_enter();
 
@@ -379,6 +399,25 @@ void ui_sensorlist_create(struct ui_psensor *ui)
 
 	g_signal_connect(ui->sensors_tree,
 			 "button-press-event", (GCallback)clicked_cbk, ui);
+
+	/* Load saved column widths and connect to width change signals */
+	for (i = 0; i < 6; i++) {
+		column = gtk_tree_view_get_column(ui->sensors_tree, i);
+		if (column) {
+			saved_width = config_get_sensorlist_column_width(i);
+			if (saved_width > 0) {
+				gtk_tree_view_column_set_sizing(column,
+								GTK_TREE_VIEW_COLUMN_FIXED);
+				gtk_tree_view_column_set_fixed_width(column,
+									 saved_width);
+			}
+
+			g_signal_connect(column,
+					 "notify::width",
+					 G_CALLBACK(column_width_changed_cb),
+					 GINT_TO_POINTER(i));
+		}
+	}
 
 	ui_sensorlist_update(ui, 1);
 

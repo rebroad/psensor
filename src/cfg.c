@@ -71,6 +71,19 @@ static const char *KEY_ALPHA_CHANNEL_ENABLED = "graph-alpha-channel-enabled";
 static const char *KEY_INTERFACE_SENSORLIST_POSITION
 = "interface-sensorlist-position";
 
+static const char *KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_SENSOR
+= "interface-sensorlist-column-width-sensor";
+static const char *KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_VALUE
+= "interface-sensorlist-column-width-value";
+static const char *KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_MIN
+= "interface-sensorlist-column-width-min";
+static const char *KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_MAX
+= "interface-sensorlist-column-width-max";
+static const char *KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_COLOR
+= "interface-sensorlist-column-width-color";
+static const char *KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_GRAPH
+= "interface-sensorlist-column-width-graph";
+
 static const char *KEY_INTERFACE_WINDOW_DECORATION_DISABLED
 = "interface-window-decoration-disabled";
 
@@ -247,6 +260,66 @@ void config_set_sensorlist_position(enum sensorlist_position pos)
 	set_int(KEY_INTERFACE_SENSORLIST_POSITION, pos);
 }
 
+int config_get_sensorlist_column_width(int col_index)
+{
+	const char *key;
+
+	switch (col_index) {
+	case 0:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_SENSOR;
+		break;
+	case 1:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_VALUE;
+		break;
+	case 2:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_MIN;
+		break;
+	case 3:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_MAX;
+		break;
+	case 4:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_COLOR;
+		break;
+	case 5:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_GRAPH;
+		break;
+	default:
+		return -1;
+	}
+
+	return get_int(key);
+}
+
+void config_set_sensorlist_column_width(int col_index, int width)
+{
+	const char *key;
+
+	switch (col_index) {
+	case 0:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_SENSOR;
+		break;
+	case 1:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_VALUE;
+		break;
+	case 2:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_MIN;
+		break;
+	case 3:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_MAX;
+		break;
+	case 4:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_COLOR;
+		break;
+	case 5:
+		key = KEY_INTERFACE_SENSORLIST_COLUMN_WIDTH_GRAPH;
+		break;
+	default:
+		return;
+	}
+
+	set_int(key, width);
+}
+
 static double get_graph_background_alpha(void)
 {
 	return get_double(KEY_GRAPH_BACKGROUND_ALPHA);
@@ -294,8 +367,8 @@ static void set_slog_enabled(bool enabled)
 }
 
 static void slog_enabled_changed_cbk(GSettings *settings,
-				     gchar *key,
-				     gpointer data)
+					 gchar *key,
+					 gpointer data)
 {
 	if (slog_enabled_cbk)
 		slog_enabled_cbk(data);
@@ -308,9 +381,9 @@ void config_set_slog_enabled_changed_cbk(void (*cbk)(void *), void *data)
 	slog_enabled_cbk = cbk;
 
 	g_signal_connect_after(settings,
-			       "changed::slog-enabled",
-			       G_CALLBACK(slog_enabled_changed_cbk),
-			       data);
+				   "changed::slog-enabled",
+				   G_CALLBACK(slog_enabled_changed_cbk),
+				   data);
 
 	log_fct_exit();
 }
@@ -422,7 +495,7 @@ struct config *config_load(void)
 	c->slog_interval = config_get_slog_interval();
 
 	c->sensor_update_interval
-	    = get_int(KEY_SENSOR_UPDATE_INTERVAL);
+		= get_int(KEY_SENSOR_UPDATE_INTERVAL);
 	if (c->sensor_update_interval < 1)
 		c->sensor_update_interval = 1;
 
@@ -839,8 +912,8 @@ void config_set_sensor_enabled(const char *sid, bool enabled)
 bool config_is_appindicator_label_enabled(const char *sid)
 {
 	return sensor_get_bool(sid,
-			       ATT_SENSOR_APPINDICATOR_LABEL_ENABLED,
-			       false);
+				   ATT_SENSOR_APPINDICATOR_LABEL_ENABLED,
+				   false);
 }
 
 void config_set_appindicator_label_enabled(const char *sid, bool enabled)

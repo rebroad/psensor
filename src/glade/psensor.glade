@@ -223,6 +223,7 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn1">
                         <property name="title" translatable="yes">Sensor</property>
+                        <property name="resizable">True</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext1"/>
                           <attributes>
@@ -234,6 +235,7 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn2">
                         <property name="title" translatable="yes">Value</property>
+                        <property name="resizable">True</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext2"/>
                           <attributes>
@@ -245,6 +247,7 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn3">
                         <property name="title" translatable="yes">Min</property>
+                        <property name="resizable">True</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext3"/>
                           <attributes>
@@ -256,6 +259,7 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn4">
                         <property name="title" translatable="yes">Max</property>
+                        <property name="resizable">True</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext4"/>
                           <attributes>
@@ -267,6 +271,7 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn5">
                         <property name="title" translatable="yes">Color</property>
+                        <property name="resizable">True</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext5"/>
                           <attributes>
@@ -278,6 +283,7 @@
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn6">
                         <property name="title" translatable="yes">Graph</property>
+                        <property name="resizable">True</property>
                         <child>
                           <object class="GtkCellRendererToggle" id="cellrenderertoggle1">
                             <signal name="toggled" handler="ui_sensorlist_cb_graph_toggled" swapped="no"/>

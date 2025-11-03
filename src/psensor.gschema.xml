@@ -69,6 +69,36 @@
       window. Possible values are 0 (right), 1 (left), 2 (top), 3
       (bottom).</description>
     </key>
+    <key name="interface-sensorlist-column-width-sensor" type="i">
+      <default>-1</default>
+      <summary>Width of the Sensor column in the sensor list</summary>
+      <description>Width of the Sensor column in pixels. -1 means auto-size.</description>
+    </key>
+    <key name="interface-sensorlist-column-width-value" type="i">
+      <default>-1</default>
+      <summary>Width of the Value column in the sensor list</summary>
+      <description>Width of the Value column in pixels. -1 means auto-size.</description>
+    </key>
+    <key name="interface-sensorlist-column-width-min" type="i">
+      <default>-1</default>
+      <summary>Width of the Min column in the sensor list</summary>
+      <description>Width of the Min column in pixels. -1 means auto-size.</description>
+    </key>
+    <key name="interface-sensorlist-column-width-max" type="i">
+      <default>-1</default>
+      <summary>Width of the Max column in the sensor list</summary>
+      <description>Width of the Max column in pixels. -1 means auto-size.</description>
+    </key>
+    <key name="interface-sensorlist-column-width-color" type="i">
+      <default>-1</default>
+      <summary>Width of the Color column in the sensor list</summary>
+      <description>Width of the Color column in pixels. -1 means auto-size.</description>
+    </key>
+    <key name="interface-sensorlist-column-width-graph" type="i">
+      <default>-1</default>
+      <summary>Width of the Graph column in the sensor list</summary>
+      <description>Width of the Graph column in pixels. -1 means auto-size.</description>
+    </key>
     <key name="interface-unity-launcher-count-disabled" type="b">
       <default>false</default>
       <summary>Whether the greatest temperature is displayed in Unity
