@@ -26,6 +26,8 @@
 #include <glibtop/mem.h>
 
 #include <pgtop2.h>
+#include <plog.h>
+#include <sys/time.h>
 
 static float last_used;
 static float last_total;
@@ -108,12 +110,22 @@ void gtop2_psensor_list_append(struct psensor ***sensors, int measures_len)
 
 void cpu_usage_sensor_update(struct psensor *s)
 {
+	struct timeval start, end;
+	double elapsed_ms;
 	double v;
 
+	gettimeofday(&start, NULL);
 	v = get_usage();
+	gettimeofday(&end, NULL);
+	elapsed_ms = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
 
-	if (v != UNKNOWN_DBL_VALUE)
+	if (v != UNKNOWN_DBL_VALUE) {
 		psensor_set_current_value(s, v);
+		/* Log if CPU usage is high or if reading took significant time */
+		if (v > 20.0 || elapsed_ms > 10.0) {
+			log_info("CPU update: usage=%.1f%%, read_time=%.2fms", v, elapsed_ms);
+		}
+	}
 }
 
 static void mem_free_sensor_update(struct psensor *s)

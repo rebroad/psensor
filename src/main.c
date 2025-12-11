@@ -24,6 +24,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
 
 #include <gtk/gtk.h>
@@ -123,11 +124,14 @@ static void *update_measures(void *data)
 	struct config *cfg;
 	int period;
 	struct ui_psensor *ui;
+	struct timeval start, end;
+	double elapsed_ms;
 
 	ui = (struct ui_psensor *)data;
 	cfg = ui->config;
 
 	while (1) {
+		gettimeofday(&start, NULL);
 		pmutex_lock(&ui->sensors_mutex);
 
 		sensors = ui->sensors;
@@ -152,6 +156,13 @@ static void *update_measures(void *data)
 		period = cfg->sensor_update_interval;
 
 		pmutex_unlock(&ui->sensors_mutex);
+		gettimeofday(&end, NULL);
+		elapsed_ms = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
+
+		/* Log if sensor update took significant time (>50ms) */
+		if (elapsed_ms > 50.0) {
+			log_info("Sensor update cycle took %.2fms (threshold: 50ms)", elapsed_ms);
+		}
 
 		sleep(period);
 	}

@@ -96,6 +96,7 @@ static double read_phone_temperature(void)
 		return UNKNOWN_DBL_VALUE;
 
 	if (fscanf(f, "%ld", &temp_milli) == 1) {
+		/* -1 is sentinel for invalid/no data, temperature must be > 0 */
 		if (temp_milli > 0) {
 			/* Convert from millidegrees to degrees Celsius */
 			temp = (double)temp_milli / 1000.0;
