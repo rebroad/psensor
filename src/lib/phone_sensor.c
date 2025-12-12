@@ -23,7 +23,6 @@
 #include <phone_sensor.h>
 #include <psensor.h>
 
-static const char *PROVIDER_NAME = "phone-sensor";
 static struct psensor *phone_temp_sensor = NULL;
 static struct psensor *phone_battery_sensor = NULL;
 
