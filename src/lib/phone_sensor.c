@@ -208,14 +208,12 @@ void phone_sensor_psensor_list_append(struct psensor ***sensors, int values_leng
 	s = create_phone_temp_sensor(values_length);
 	if (s) {
 		psensor_list_append(sensors, s);
-		log_info(_("%s: Phone temperature sensor added."), PROVIDER_NAME);
 	}
 
 	/* Try to create phone battery level sensor */
 	s = create_phone_battery_sensor(values_length);
 	if (s) {
 		psensor_list_append(sensors, s);
-		log_info(_("%s: Phone battery level sensor added."), PROVIDER_NAME);
 	}
 }
 

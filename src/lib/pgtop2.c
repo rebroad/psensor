@@ -376,12 +376,6 @@ static void log_top_cpu_processes_sync(void)
 					procs[i].pid, procs[i].comm, procs[i].cpu_percent);
 			}
 		}
-	} else {
-		if (!times_initialized) {
-			log_info("Processes with elevated CPU usage: (initializing tracking, will be available on next spike)");
-		} else {
-			log_info("Processes with elevated CPU usage: (no processes spiking above their average detected)");
-		}
 	}
 
 	/* Update tracking state AFTER processing */
