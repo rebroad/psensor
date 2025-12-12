@@ -38,6 +38,9 @@ AM_CPPFLAGS =-Wall \
 
 DEFS = -DPACKAGE_DATA_DIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
+# Explicitly declare dependency on the library so make tracks it
+psensor_DEPENDENCIES = lib/libpsensor.a
+
 LIBS = \
 	lib/libpsensor.a \
 	$(GTK_LIBS)\
