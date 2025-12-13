@@ -390,22 +390,9 @@ static void log_top_cpu_processes_sync(int during_spike)
 		for (int i = 0; i < top_count; i++) {
 			if (procs[i].cpu_avg > 0.0) {
 				double factor = procs[i].cpu_percent / procs[i].cpu_avg;
-				if (during_spike) {
-					/* During spike: show absolute CPU and relative spike if applicable */
-					if (factor > PROC_SPIKE_THRESHOLD) {
-						log_info("  PID %d (%s): %.1f%% (avg=%.2f%%, %.1fx above avg)",
-							procs[i].pid, procs[i].comm, procs[i].cpu_percent,
-							procs[i].cpu_avg, factor);
-					} else {
-						log_info("  PID %d (%s): %.1f%% (avg=%.2f%%)",
-							procs[i].pid, procs[i].comm, procs[i].cpu_percent,
-							procs[i].cpu_avg);
-					}
-				} else {
-					log_info("  PID %d (%s): %.1f%% (avg=%.2f%%, %.1fx above avg)",
-						procs[i].pid, procs[i].comm, procs[i].cpu_percent,
-						procs[i].cpu_avg, factor);
-				}
+				log_info("  PID %d (%s): %.1f%% (avg=%.2f%%, %.1fx above avg)",
+					procs[i].pid, procs[i].comm, procs[i].cpu_percent,
+					procs[i].cpu_avg, factor);
 			} else {
 				log_info("  PID %d (%s): %.1f%% (new process, no history)",
 					procs[i].pid, procs[i].comm, procs[i].cpu_percent);
