@@ -328,19 +328,10 @@ static void log_top_cpu_processes_sync(int during_spike)
 
 								/* Check if process should be shown */
 								int should_show = 0;
-								if (cpu_percent > 0.1) {
+								if (cpu_percent > 0.01) {
 									if (during_spike) {
-										/* During spike: show ALL processes using > 0.1% CPU
-										 * We'll sort and show top 10 to see what's actually consuming CPU
-										 */
-										should_show = 1;
-									} else {
-										/* Regular tracking: only show processes > 2x average (if they have history) */
-										if (prev_samples_count >= 5 && prev_avg > 0.0) {
-											double threshold_value = prev_avg * PROC_SPIKE_THRESHOLD;
-											if (cpu_percent > threshold_value) {
-												should_show = 1;
-											}
+										if (cpu_percent > prev_avg) {
+											should_show = 1;
 										}
 									}
 
@@ -381,11 +372,7 @@ static void log_top_cpu_processes_sync(int during_spike)
 	if (proc_count > 0) {
 		qsort(procs, proc_count, sizeof(struct proc_cpu_info), compare_proc_cpu);
 
-		if (during_spike) {
-			log_info("Top CPU processes during spike:");
-		} else {
-			log_info("Processes with elevated CPU usage (spiking above their average):");
-		}
+		log_info("Top CPU processes:");
 		int top_count = proc_count < 5 ? proc_count : 5;
 		for (int i = 0; i < top_count; i++) {
 			if (procs[i].cpu_avg > 0.0) {
@@ -394,7 +381,7 @@ static void log_top_cpu_processes_sync(int during_spike)
 					procs[i].pid, procs[i].comm, procs[i].cpu_percent,
 					procs[i].cpu_avg, factor);
 			} else {
-				log_info("  PID %d (%s): %.1f%% (new process, no history)",
+				log_info("  PID %d (%s): %.1f%% (new)",
 					procs[i].pid, procs[i].comm, procs[i].cpu_percent);
 			}
 		}
