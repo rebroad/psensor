@@ -208,7 +208,7 @@ static int init_new_proc_entry(pid_t pid, unsigned long utime, unsigned long sti
 	return idx;
 }
 
-static void log_top_cpu_processes_sync(void)
+static void log_top_cpu_processes_sync(int during_spike)
 {
 	FILE *fp;
 	char line[1024];
@@ -326,11 +326,25 @@ static void log_top_cpu_processes_sync(void)
 								proc_times[proc_idx].cpu_avg =
 									sum / proc_times[proc_idx].cpu_samples_count;
 
-								/* Check threshold using previous values (before current sample was added) */
-								if (cpu_percent > 0.1 && prev_samples_count >= 5 && prev_avg > 0.0) {
-									double threshold_value = prev_avg * PROC_SPIKE_THRESHOLD;
-									if (cpu_percent > threshold_value) {
-										/* This is a spike - add to list */
+								/* Check if process should be shown */
+								int should_show = 0;
+								if (cpu_percent > 0.1) {
+									if (during_spike) {
+										/* During spike: show ALL processes using > 0.1% CPU
+										 * We'll sort and show top 10 to see what's actually consuming CPU
+										 */
+										should_show = 1;
+									} else {
+										/* Regular tracking: only show processes > 2x average (if they have history) */
+										if (prev_samples_count >= 5 && prev_avg > 0.0) {
+											double threshold_value = prev_avg * PROC_SPIKE_THRESHOLD;
+											if (cpu_percent > threshold_value) {
+												should_show = 1;
+											}
+										}
+									}
+
+									if (should_show) {
 										if (proc_count >= proc_capacity) {
 											proc_capacity = proc_capacity ? proc_capacity * 2 : 64;
 											procs = realloc(procs, proc_capacity * sizeof(struct proc_cpu_info));
@@ -342,7 +356,11 @@ static void log_top_cpu_processes_sync(void)
 										procs[proc_count].pid = pid;
 										procs[proc_count].cpu_percent = cpu_percent;
 										snprintf(procs[proc_count].comm, sizeof(procs[proc_count].comm), "%s", comm);
-										procs[proc_count].cpu_avg = prev_avg;  /* Use previous average for display */
+										if (prev_samples_count >= 5 && prev_avg > 0.0) {
+											procs[proc_count].cpu_avg = prev_avg;  /* Use previous average for display */
+										} else {
+											procs[proc_count].cpu_avg = 0.0;  /* New process, no history */
+										}
 										proc_count++;
 									}
 								}
@@ -359,20 +377,37 @@ static void log_top_cpu_processes_sync(void)
 	}
 	closedir(dir);
 
-	/* Sort by CPU usage and log processes that are spiking */
+	/* Sort by CPU usage and log processes */
 	if (proc_count > 0) {
 		qsort(procs, proc_count, sizeof(struct proc_cpu_info), compare_proc_cpu);
 
-		log_info("Processes with elevated CPU usage (spiking above their average):");
+		if (during_spike) {
+			log_info("Top CPU processes during spike:");
+		} else {
+			log_info("Processes with elevated CPU usage (spiking above their average):");
+		}
 		int top_count = proc_count < 5 ? proc_count : 5;
 		for (int i = 0; i < top_count; i++) {
 			if (procs[i].cpu_avg > 0.0) {
 				double factor = procs[i].cpu_percent / procs[i].cpu_avg;
-				log_info("  PID %d (%s): %.1f%% (avg=%.2f%%, %.1fx above avg)",
-					procs[i].pid, procs[i].comm, procs[i].cpu_percent,
-					procs[i].cpu_avg, factor);
+				if (during_spike) {
+					/* During spike: show absolute CPU and relative spike if applicable */
+					if (factor > PROC_SPIKE_THRESHOLD) {
+						log_info("  PID %d (%s): %.1f%% (avg=%.2f%%, %.1fx above avg)",
+							procs[i].pid, procs[i].comm, procs[i].cpu_percent,
+							procs[i].cpu_avg, factor);
+					} else {
+						log_info("  PID %d (%s): %.1f%% (avg=%.2f%%)",
+							procs[i].pid, procs[i].comm, procs[i].cpu_percent,
+							procs[i].cpu_avg);
+					}
+				} else {
+					log_info("  PID %d (%s): %.1f%% (avg=%.2f%%, %.1fx above avg)",
+						procs[i].pid, procs[i].comm, procs[i].cpu_percent,
+						procs[i].cpu_avg, factor);
+				}
 			} else {
-				log_info("  PID %d (%s): %.1f%% (insufficient history)",
+				log_info("  PID %d (%s): %.1f%% (new process, no history)",
 					procs[i].pid, procs[i].comm, procs[i].cpu_percent);
 			}
 		}
@@ -412,14 +447,14 @@ void cpu_usage_sensor_update(struct psensor *s)
 		/* This ensures we have recent data when a spike occurs */
 		update_count++;
 		if (update_count % 10 == 0) {
-			log_top_cpu_processes_sync();
+			log_top_cpu_processes_sync(0);  /* Regular tracking: only show processes > 2x average */
 		}
 
 		/* Log spike if CPU is significantly above average */
 		if (cpu_samples_count >= 10 && v > cpu_avg * CPU_SPIKE_THRESHOLD && v > 10.0) {
 			log_info("CPU spike detected: usage=%.1f%% (avg=%.1f%%, %.1fx above avg)",
 				v, cpu_avg, v / cpu_avg);
-			log_top_cpu_processes_sync();
+			log_top_cpu_processes_sync(1);  /* During spike: also show new processes */
 		}
 	}
 }
