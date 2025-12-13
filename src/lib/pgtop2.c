@@ -244,20 +244,33 @@ static void log_top_cpu_processes_sync(int during_spike)
 	dir = opendir("/proc");
 	if (dir == NULL) return;
 
-	int scanned = 0;
-	while ((entry = readdir(dir)) != NULL && scanned < 500) {
+	/* Scan all process directories - modern systems typically have < 1000 processes,
+	 * and scanning is fast enough that we don't need an artificial limit.
+	 * The real bottleneck is reading /proc/PID/stat for each process.
+	 */
+	while ((entry = readdir(dir)) != NULL) {
 		if (entry->d_name[0] < '0' || entry->d_name[0] > '9')
 			continue;
 
 		pid = atoi(entry->d_name);
 		if (pid <= 0) continue;
-		scanned++;
 
 		snprintf(path, sizeof(path), "/proc/%d/stat", pid);
 		fp = fopen(path, "r");
 		if (fp == NULL) continue;
 
 		if (fgets(line, sizeof(line), fp)) {
+			/* Quick check: skip processes in uninterruptible sleep (D) or zombie (Z) state
+			 * These are unlikely to be using CPU. State is the 3rd field in /proc/PID/stat.
+			 */
+			char *state_start = strchr(line, ')');
+			if (state_start && state_start[1] == ' ') {
+				char state = state_start[2];
+				if (state == 'D' || state == 'Z') {
+					fclose(fp);
+					continue;
+				}
+			}
 			/* Parse: pid (comm) state ppid ... utime stime ... */
 			/* Find the closing paren of comm field */
 			char *paren_end = strrchr(line, ')');
@@ -309,7 +322,6 @@ static void log_top_cpu_processes_sync(int during_spike)
 
 								/* Save the PREVIOUS average and sample count before updating (for threshold check) */
 								double prev_avg = proc_times[proc_idx].cpu_avg;
-								int prev_samples_count = proc_times[proc_idx].cpu_samples_count;
 
 								/* Update per-process average */
 								proc_times[proc_idx].cpu_samples[proc_times[proc_idx].cpu_sample_idx] = cpu_percent;
@@ -347,11 +359,7 @@ static void log_top_cpu_processes_sync(int during_spike)
 										procs[proc_count].pid = pid;
 										procs[proc_count].cpu_percent = cpu_percent;
 										snprintf(procs[proc_count].comm, sizeof(procs[proc_count].comm), "%s", comm);
-										if (prev_samples_count >= 5 && prev_avg > 0.0) {
-											procs[proc_count].cpu_avg = prev_avg;  /* Use previous average for display */
-										} else {
-											procs[proc_count].cpu_avg = 0.0;  /* New process, no history */
-										}
+										procs[proc_count].cpu_avg = prev_avg;
 										proc_count++;
 									}
 								}
