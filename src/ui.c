@@ -409,7 +409,7 @@ void ui_window_update(struct ui_psensor *ui)
 
 	cfg = ui->config;
 
-	if (cfg->window_restore_enabled)
+	if (cfg->window_restore_enabled && cfg->window_divider_pos > 0)
 		gtk_paned_set_position(GTK_PANED(w_sensor_box),
 				       cfg->window_divider_pos);
 
