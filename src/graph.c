@@ -666,6 +666,8 @@ int compute_values_max_length(struct config *c)
 
 	duration = c->graph_monitoring_duration * 60;
 	interval = c->sensor_update_interval;
+	if (interval > 5)
+		interval = 5;
 
 	n = 3 + ceil((((double)duration) / interval) + 0.5) + 3;
 

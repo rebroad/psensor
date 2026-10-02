@@ -33,6 +33,7 @@
 #include <amd.h>
 #include <cfg.h>
 #include <graph.h>
+#include <history.h>
 #include <hdd.h>
 #include <lmsensor.h>
 #include <notify_cmd.h>
@@ -216,6 +217,16 @@ static gboolean ui_refresh_thread(gpointer data)
 	return ret;
 }
 
+static gboolean history_save_cb(gpointer data)
+{
+	struct ui_psensor *ui = data;
+
+	pmutex_lock(&ui->sensors_mutex);
+	history_save(ui->sensors, ui->config->graph_monitoring_duration);
+	pmutex_unlock(&ui->sensors_mutex);
+	return TRUE;
+}
+
 static void cb_alarm_raised(struct psensor *sensor, void *data)
 {
 	if (config_get_sensor_alarm_enabled(sensor->id)) {
@@ -356,6 +367,7 @@ static void cleanup(struct ui_psensor *ui)
 	pmutex_lock(&ui->sensors_mutex);
 
 	log_debug("Cleanup...");
+	history_save(ui->sensors, ui->config->graph_monitoring_duration);
 
 	nvidia_cleanup();
 	amd_cleanup();
@@ -509,6 +521,8 @@ int main(int argc, char **argv)
 	ui.config = config_load();
 
 	ui.sensors = create_sensors_list(url);
+	update_psensor_values_size(ui.sensors, ui.config);
+	history_load(ui.sensors, ui.config->graph_monitoring_duration);
 	associate_cb_alarm_raised(ui.sensors, &ui);
 
 	if (ui.config->slog_enabled)
@@ -533,6 +547,7 @@ int main(int argc, char **argv)
 	ui.graph_update_interval = ui.config->graph_update_interval;
 
 	g_timeout_add(1000 * ui.graph_update_interval, ui_refresh_thread, &ui);
+	g_timeout_add(5000, history_save_cb, &ui);
 
 	ui_appindicator_init(&ui);
 	ui_unity_init();

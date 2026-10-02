@@ -4,6 +4,7 @@ psensor_SOURCES = \
 	cfg.h cfg.c \
 	notify_cmd.c notify_cmd.h \
 	graph.h graph.c \
+	history.h history.c \
 	main.c \
 	pxdg.h pxdg.c \
 	rsensor.h \
