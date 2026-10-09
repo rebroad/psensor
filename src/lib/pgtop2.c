@@ -322,6 +322,7 @@ static void log_top_cpu_processes_sync(int during_spike)
 
 								/* Save the PREVIOUS average and sample count before updating (for threshold check) */
 								double prev_avg = proc_times[proc_idx].cpu_avg;
+								int prev_samples_count = proc_times[proc_idx].cpu_samples_count;
 
 								/* Update per-process average */
 								proc_times[proc_idx].cpu_samples[proc_times[proc_idx].cpu_sample_idx] = cpu_percent;
@@ -342,8 +343,22 @@ static void log_top_cpu_processes_sync(int during_spike)
 								int should_show = 0;
 								if (cpu_percent > 0.01) {
 									if (during_spike) {
-										if (cpu_percent > prev_avg) {
-											should_show = 1;
+										/* During spike: only show processes that are spiking above their average
+										 * These are the ones contributing to the spike above baseline.
+										 * Also show new processes (no history) that might be causing the spike.
+										 */
+										if (prev_samples_count > 1 && prev_avg > 0.0) {
+											/* Process has history: show if above average */
+											if (cpu_percent > prev_avg) {
+												should_show = 1;
+											}
+										} else {
+											/* New process (no history yet): show if using significant CPU
+											 * This might be a new process causing the spike
+											 */
+											if (cpu_percent > 0.5) {
+												should_show = 1;
+											}
 										}
 									}
 
